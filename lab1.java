@@ -1,4 +1,4 @@
-#Lab 1
+/*Lab 1
 
 
 #Function insertion_sort(array unsorted list), returns array sorted list:
@@ -10,12 +10,26 @@
 #		set (list current index+1) to (list current index)
 #		decrease current index by 1
 #	set set (list current index+1) to key
-#return copy of list, now sorted
+#return copy of list, now sorted*/
 		
 public int[] insertion_sort(int[] unsorted_list) {
 	
+	int[] copy_list = unsorted_list;
+	
+	for(int i = 0; i< unsorted_list.length();i++) {
+		int key = copy_list[i];
+		int j = i-1;
+		while(j>=0 && copy_list[j]>key) {
+			copy_list[i+1] = copy_list[i];
+			j = j-1;
+		}
+		copy_list[j+1] = key;
+	}
+	
+	return copy_list;
 }
 
+/*
 #Function bSort(array unsorted list), returns array sorted list:
 # Make copy of unsorted list
 # For-loop trough list from index 0 to end
@@ -29,9 +43,32 @@ public int[] insertion_sort(int[] unsorted_list) {
 #	pop current index from copied list
 #	insert 'high' and key into copied list
 # return copied list, now sorted
+*/
 
+public int[] bSort(int[] unsorted_list) {
+	
+	int[] copy_list = unsorted_list;
+	
+	for(int i = 0; i< unsorted_list.length();i++) {
+		
+		int key = copy_list[i];
+		int low = 0;
+		int high = i;
+		
+		while(low<high) {
+			int middle = Integer.floor((high+low)/2);
+			if(middle >= key) {high = middle;}
+			else {low = middle+1;}
+		}
+		copy_list.pop(i);
+		copy_list[high] = key;
+	}
+	
+	return copy_list;
+	
+}
 
-//Pseudocode for the first part of mergeSort, that is, to split the dataSet into k parts.
+/*Pseudocode for the first part of mergeSort, that is, to split the dataSet into k parts.
 //the indexing is probably a bit off but the math should be correct which is what I struggled with first.
 
 mergeSort(dataSet, k)
@@ -54,5 +91,5 @@ mergeSort(dataSet, k)
                 splittedArray[i] = dataSet[splittedArrayPos to (splittedArrayPos + ceiling(n - splittedArrayPos) / tempk) - 1]
                 tempK = tempK - 1;
                 splittedArrayPos = (splittedArrayPos + ceiling(n - splittedArrayPos) / tempk);
-
+*/
 
