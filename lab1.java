@@ -29,3 +29,30 @@ public int[] insertion_sort(int[] unsorted_list) {
 #	pop current index from copied list
 #	insert 'high' and key into copied list
 # return copied list, now sorted
+
+
+//Pseudocode for the first part of mergeSort, that is, to split the dataSet into k parts.
+//the indexing is probably a bit off but the math should be correct which is what I struggled with first.
+
+mergeSort(dataSet, k)
+        n = length of dataSet
+        splittedArray = array[];
+        splittedarrayPos = 0;
+        chunkSize = 0;
+        
+        //splitting the dataSet into k parts and storing in splittedArray
+        if (n is evenly divideable by k)
+        chunkSize = n / k;
+            for loop (i=0 to k-1)
+                splittedArray[i] = dataSet[splittedArrayPos to chunkSize - 1];
+                splittedArrayPos = splittedArrayPos + chunkSize;
+
+        else
+	//This part is for when we're unable to split all subArrays into equal parts.
+            tempK = k;
+            for loop (i=0 to k-1)
+                splittedArray[i] = dataSet[splittedArrayPos to (splittedArrayPos + ceiling(n - splittedArrayPos) / tempk) - 1]
+                tempK = tempK - 1;
+                splittedArrayPos = (splittedArrayPos + ceiling(n - splittedArrayPos) / tempk);
+
+
