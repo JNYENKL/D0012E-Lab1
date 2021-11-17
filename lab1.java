@@ -1,120 +1,117 @@
 
-import java.util.*;
-//Lab 1
+package lab1;
 
-public class Main {
-	
-	/*Function insertion_sort(array unsorted list), returns array sorted list:
-	# Make copy of unsorted list
-	# For-loop trough list from index 0 to end
-	# 	get key of current element
-	#   save index of current element - 1
-	#	while-loop while j >=0 and j:th of unsorted list copy is larger than key
-	#		set (list current index+1) to (list current index)
-	#		decrease current index by 1
-	#	set set (list current index+1) to key
-	#return copy of list, now sorted*/
-			
-	public int[] insertion_sort(int[] unsorted_list) {
-		
-		int[] copy_list = unsorted_list;
-		
-		for(int i = 0; i< unsorted_list.length;i++) {
-			int key = copy_list[i];
-			int j = i-1;
-			while(j>=0 && copy_list[j]>key) {
-				copy_list[i+1] = copy_list[i];
-				j = j-1;
-			}
-			copy_list[j+1] = key;
+import java.util.*;
+
+public class lab1 {
+
+	public static void main(String[] args) {
+		Random rand = new Random();
+		int[] datSet = new int[1000];
+		for (int i = 0; i < 1000; i++) {
+			datSet[i] = rand.nextInt(100);
+			//System.out.print(" " + datSet[i]);
 		}
 		
-		return copy_list;
+		//========PRINTING===========
+		//Print out the unsorted data set:
+		System.out.print("Un-sorted: [");
+        for(int i = 0; i<datSet.length;i++) {
+        	System.out.print(datSet[i] + ",");
+        }
+        System.out.print("] \n");
+        
+        //Print out the insertionsorted data set:
+		System.out.print("i Sorted: [");
+        for(int i = 0; i<datSet.length;i++) {
+        	System.out.print(insertionSort(datSet, datSet.length)[i] + ",");
+        }
+        System.out.print("] \n");
+		
+		
+        //Print out the bsorted data set:
+		System.out.print("b Sorted: [");
+        for(int i = 0; i<datSet.length;i++) {
+        	System.out.print(bSort(datSet)[i] + ",");
+        }
+        System.out.print("] \n");
+		
 	}
+	
+	static int[] insertionSort(int array[], int array_length)
+    {
+        // The base case
+        if (array_length <= 1)
+            return array;
+    
+        // Sort first n-1 elements
+        insertionSort( array, array_length-1 );
+    
+        //Put last element at correct location
+        int last = array[array_length-1];
+        int j = array_length-2;
+    
+        //Move elements of array > key
+        while (j >= 0 && array[j] > last)
+        {
+            array[j+1] = array[j];
+            j--;
+        }
+        
+        //Put the last one where it should be in array
+        array[j+1] = last;
+        
+        return array;
+    }
+	
+	
+	static int[] bSort(int array[])
+    {
+        for (int i = 1; i < array.length; i++)
+        {
+            int key = array[i];
+ 
+            int hi = i;
+            int lo = 0;
+            
+            //Find where to put the current key by binary search
+            int j = Math.abs(BinarySearch(array, key, lo, hi));
+            
+            //Shift array right
+            System.arraycopy(array, j, array, j + 1, i - j);
+ 
+            //Assign key to the found index of array 
+            array[j] = key;
+        }
+        
+        return array;
+    }
+	
 	
 	/*
-	#Function bSort(array unsorted list), returns array sorted list:
-	# Make copy of unsorted list
-	# For-loop trough list from index 0 to end
-	#	get key of current element
-	#	save lowest index (0) in var 'low'
-	#   save highest index (current index) in var 'high'
-	#	while-loop on condition (low < high)
-	#		Get middle of list by floor of (high+low)/2, save in 'middle'
-	#		if 'middle' is larger or equal to key, 'middle' is the new 'high'
-	#		Otherwise, 'low' is 'middle' + 1
-	#	pop current index from copied list
-	#	insert 'high' and key into copied list
-	# return copied list, now sorted
-	*/
-	
-	public int[] bSort(int[] unsorted_list) {
-		
-		int[] copy_list = unsorted_list;
-		
-		for(int i = 0; i< unsorted_list.length;i++) {
-			
-			int key = copy_list[i];
-			int low = 0;
-			int high = i;
-			
-			while(low<high) {
-				int middle = (high+low)/2;
-				if(middle >= key) {high = middle;}
-				else {low = middle+1;}
+	 * This is a function that uses binary search 
+	 * to find a place to put the element with value 'key'
+	 * in the array and returns an index number
+	 */
+	 
+	static int BinarySearch(
+			  int[] array, int key, int lo, int hi) {
+			    
+				int index = Integer.MAX_VALUE;
+			    
+			    while (lo <= hi) {
+			        int mid = lo  + ((hi - lo) / 2);
+			        if (array[mid] < key) {
+			            lo = mid + 1;
+			        } else if (array[mid] > key) {
+			            hi = mid - 1;
+			        } else if (array[mid] == key) {
+			            index = mid;
+			            break;
+			        }
+			    }
+			    return index;
 			}
-			copy_list.pop(i);
-			copy_list[high] = key;
-		}
-		
-		return copy_list;
-		
-	}
 	
-	/*Pseudocode for the first part of mergeSort, that is, to split the dataSet into k parts.
-	//the indexing is probably a bit off but the math should be correct which is what I struggled with first.
-	
-	mergeSort(dataSet, k)
-	        n = length of dataSet
-	        splittedArray = array[];
-	        splittedarrayPos = 0;
-	        chunkSize = 0;
-	        
-	        //splitting the dataSet into k parts and storing in splittedArray
-	        if (n is evenly divideable by k)
-	        chunkSize = n / k;
-	            for loop (i=0 to k-1)
-	                splittedArray[i] = dataSet[splittedArrayPos to chunkSize - 1];
-	                splittedArrayPos = splittedArrayPos + chunkSize;
-	
-	        else
-		//This part is for when we're unable to split all subArrays into equal parts.
-	            tempK = k;
-	            for loop (i=0 to k-1)
-	                splittedArray[i] = dataSet[splittedArrayPos to (splittedArrayPos + ceiling(n - splittedArrayPos) / tempk) - 1]
-	                tempK = tempK - 1;
-	                splittedArrayPos = (splittedArrayPos + ceiling(n - splittedArrayPos) / tempk);
-	*/
-	
-	public int[] mergeSort(int[] unsorted_list, int k) {
-		int n = unsorted_list.length;
-		int[] splitted_array = [];
-		int splittedArray_pos = 0;
-		chunk_size = 0;
-		
-		if(n % k = 0) {
-			chunk_size = n/k;
-			for(int i = 0;i < k; i++) {
-				splitted_array[i] = unsorted_list[splittedArray_pos ]
-			}
-		}
-	}
-	
-	public static void main(String[] args) {
-		int n = Integer.parse(args[0]);
-		int k = Integer.parse(args[1]);
-		
-		
-	}
 }
 
