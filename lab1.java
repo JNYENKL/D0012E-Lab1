@@ -1,4 +1,3 @@
-
 package lab1;
 
 import java.util.*;
@@ -36,6 +35,22 @@ public class lab1 {
         }
         System.out.print("] \n");
 		
+        
+        int [] outArray1 = mergeSort_1(datSet, 5);
+        //MergeSort #1
+        System.out.print("Merge Sorted: [");
+        for(int i = 0; i<datSet.length;i++) {
+        	System.out.print(outArray1[i] + ",");
+        }
+        System.out.print("] \n");
+        
+        int [] outArray2 = mergeSort_2(datSet, 5);
+        //MergeSort #2
+        System.out.print("bMerge Sorted: [");
+        for(int i = 0; i<datSet.length;i++) {
+        	System.out.print(outArray2[i] + ",");
+        }
+        System.out.print("] \n");
 	}
 	
 	static int[] insertionSort(int array[], int array_length)
@@ -94,8 +109,7 @@ public class lab1 {
 	 * in the array and returns an index number
 	 */
 	 
-	static int BinarySearch(
-			  int[] array, int key, int lo, int hi) {
+	static int BinarySearch(int[] array, int key, int lo, int hi) {
 			    
 				int index = Integer.MAX_VALUE;
 			    
@@ -111,7 +125,102 @@ public class lab1 {
 			        }
 			    }
 			    return index;
+	}
+	
+	
+	static int[] mergeSort_1(int[] array, int k) {
+		
+		
+		int n = array.length;
+		
+		int[] result = new int[n];
+		
+		//Size of chunks that will be sorted
+		int chunkSize = Math.floorDiv(n, k);
+		
+		
+		
+		if(chunkSize <= 0) {
+			return null;
+		}
+		
+		int rest = n % chunkSize;
+		
+		int numberOfChunks = n / chunkSize + (rest > 0 ? 1 : 0);
+		
+		//Hold chunks in a 2D-array
+		int [][] splittedArrays = new int[numberOfChunks][];
+		
+		//Traverse array chunk by chunk and assign each chunk an index in the splitted array
+		for(int i = 0; i< (rest > 0 ? numberOfChunks -1 : numberOfChunks); i++) {
+			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*chunkSize,(numberOfChunks -1)*chunkSize + rest);
+		}
+		
+		//Time to do the sorting on each block
+		for(int i = 0; i<numberOfChunks; i++) {
+			splittedArrays[i] = insertionSort(splittedArrays[i], splittedArrays[i].length);
+			
+		}
+		
+		//The merging
+		for(int i = 0; i<numberOfChunks; i++) {
+			for(int j=0;j<splittedArrays[i].length;j++) {
+				array[j] = splittedArrays[i][j];
 			}
+			
+			
+		}
+		
+		
+		return array;
+	}
+	
+static int[] mergeSort_2(int[] array, int k) {
+		
+		
+		int n = array.length;
+		
+		int[] result = new int[n];
+		
+		//Size of chunks that will be sorted
+		int chunkSize = Math.floorDiv(n, k);
+		
+		
+		
+		if(chunkSize <= 0) {
+			return null;
+		}
+		
+		int rest = n % chunkSize;
+		
+		int numberOfChunks = n / chunkSize + (rest > 0 ? 1 : 0);
+		
+		//Hold chunks in a 2D-array
+		int [][] splittedArrays = new int[numberOfChunks][];
+		
+		//Traverse array chunk by chunk and assign each chunk an index in the splitted array
+		for(int i = 0; i< (rest > 0 ? numberOfChunks -1 : numberOfChunks); i++) {
+			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*chunkSize,(numberOfChunks -1)*chunkSize + rest);
+		}
+		
+		//Time to do the sorting on each block
+		for(int i = 0; i<numberOfChunks; i++) {
+			splittedArrays[i] = bSort(splittedArrays[i]);
+			
+		}
+		
+		//The merging
+		for(int i = 0; i<numberOfChunks; i++) {
+			for(int j=0;j<splittedArrays[i].length;j++) {
+				array[j] = splittedArrays[i][j];
+			}
+			
+			
+		}
+		
+		
+		return array;
+	}
+
 	
 }
-
