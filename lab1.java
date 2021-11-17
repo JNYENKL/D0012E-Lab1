@@ -33,24 +33,37 @@ public class lab1 {
         for(int i = 0; i<datSet.length;i++) {
         	System.out.print(bSort(datSet)[i] + ",");
         }
-        System.out.print("] \n");
+        System.out.print("] \n\n");
 		
         
+      //===========MergeSort #1=========================
+        long t1 = System.nanoTime();
         int [] outArray1 = mergeSort_1(datSet, 5);
-        //MergeSort #1
+        long t2 = System.nanoTime();
+        long performance1 = t2-t1;
+        System.out.println("Time for mergeSort with insertionSort:" + performance1 + "ns");
+        
+        
         System.out.print("Merge Sorted: [");
         for(int i = 0; i<datSet.length;i++) {
         	System.out.print(outArray1[i] + ",");
         }
         System.out.print("] \n");
         
+        //==========MergeSort #2========================
+        long t3 = System.nanoTime();
         int [] outArray2 = mergeSort_2(datSet, 5);
-        //MergeSort #2
+        long t4 = System.nanoTime();
+        long performance2 = t4-t3;
+        System.out.println("Time for mergeSort with bSort:" + performance2 + "ns");
+        
+        
         System.out.print("bMerge Sorted: [");
         for(int i = 0; i<datSet.length;i++) {
         	System.out.print(outArray2[i] + ",");
         }
         System.out.print("] \n");
+        
 	}
 	
 	static int[] insertionSort(int array[], int array_length)
