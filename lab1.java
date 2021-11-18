@@ -172,15 +172,16 @@ public class lab1 {
 	
 	//Mergesort using insertionSort
 	static int[] mergeSort_1(int[] array, int k) {
+		//Cannot divide by 0
 		if(k <= 0) {
-			return null; //null causes error when reading array.length in bSort
+			return null; 
 		}
 		
 		int n = array.length;
 		
 		int rest = n % k;
 		
-		
+		//Get number of sub-sets to create and add 1 if there's a rest in n/k
 		int numberOfChunks = n / k + (rest > 0 ? 1 : 0);
 		
 		//Hold chunks in a 2D-array
@@ -205,8 +206,6 @@ public class lab1 {
 			
 			
 		}
-		
-		
 		return array;
 	}
 	
