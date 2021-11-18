@@ -1,4 +1,3 @@
-iimport java.util.Arrays;
 import java.util.Random;
 
 public class Main {
@@ -38,7 +37,7 @@ public class Main {
         
       //===========MergeSort #1=========================
         long t1 = System.nanoTime();
-        int [] outArray1 = mergeSort_1(datSet, 5);
+        int [] outArray1 = mergeSort_1(datSet, 7);
         long t2 = System.nanoTime();
         long performance1 = t2-t1;
         System.out.println("Time for mergeSort with insertionSort:" + performance1 + "ns");
@@ -143,51 +142,86 @@ public class Main {
 	}
 	
 	
-	static int[] mergeSort_1(int[] array, int k) {
+static int[] mergeSort_1(int[] array, int k) {
 		
 		
 		int n = array.length;
 		
 		int[] result = new int[n];
+		int[] merge1 = new int[n];
+		int[] merge2 = new int[n];
 		
-		//Size of chunks that will be sorted
-		int chunkSize = Math.floorDiv(n, k);
-		
-		
-		
-		if(chunkSize <= 0) {
-			return null;
+		//The backbone of the recursive algorithm, after splitting the array into parts it returns a sorted subArray
+		if (k==1) {
+			return insertionSort(array, n);
+		}
+		//Whenever there needs to be an unneven splitting of the array, 1 array will be created seperately as well 
+		//as a subArray with an even number of further splits.
+		else if (k % 2 == 1) {
+			//creates a subarray that contains a k:th of the original array (rounded down + the rest). 
+			int[] subArray1 = new int[n/k + (n % k)];
+			for (int i = 0; i < n / k + (n % k); i++) {
+				subArray1[i] = array[i];
+			}
+			//creates a subarray that contains whatever was left from the original array that wasn't already copied
+			//by the previous subarray
+			int[] subArray2 = new int[n - n / k - n % k];
+			for (int i = 0; i < n - n / k - n % k; i++) {
+				subArray2[i] = array[i + n / k + n % k];
+			}
+			//adds the subArrays to the appropriate arrays for later merging. 
+			merge1 = mergeSort_1(subArray1, 1);
+			merge2 = mergeSort_1(subArray2, k-1);
+		}
+		//The else is called whenever there is an even splitting of the code, splitting the array into 2 equal parts
+		//that'll be split further an equal number of times. 
+		else {
+			//Creates 2 subarrays containing a half of the original array's contents each
+			int[] subArray1 = new int[n / 2];
+			int[] subArray2 = new int[n / 2];
+			for (int i = 0; i < n / 2; i++) {
+				subArray1[i] = array[i];
+				subArray2[i] = array[i + n / 2];
+			}
+			//adds the subArrays to the appropriate arrays for later merging. 
+			merge1 = mergeSort_1(subArray1, k/2);
+			merge2 = mergeSort_1(subArray2, k/2);
 		}
 		
-		int rest = n % chunkSize;
-		
-		int numberOfChunks = n / chunkSize + (rest > 0 ? 1 : 0);
-		
-		//Hold chunks in a 2D-array
-		int [][] splittedArrays = new int[numberOfChunks][];
-		
-		//Traverse array chunk by chunk and assign each chunk an index in the splitted array
-		for(int i = 0; i< (rest > 0 ? numberOfChunks -1 : numberOfChunks); i++) {
-			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*chunkSize,(numberOfChunks -1)*chunkSize + rest);
-		}
-		
-		//Time to do the sorting on each block
-		for(int i = 0; i<numberOfChunks; i++) {
-			splittedArrays[i] = insertionSort(splittedArrays[i], splittedArrays[i].length);
-			
-		}
-		
-		//The merging
-		for(int i = 0; i<numberOfChunks; i++) {
-			for(int j=0;j<splittedArrays[i].length;j++) {
-				array[j] = splittedArrays[i][j];
+		//counter to keep track of the index of the integers to be compared
+		int indexCount1 = 0;
+		int indexCount2 = 0;
+		//Merges the 2 subarrays
+		for (int i = 0; i < n; i++) {
+			//compares the lowest unadded value of each list and adds the lowest to the end of a resulting list
+			if (merge1[indexCount1] <= merge2[indexCount2]) {
+				result[i] = merge1[indexCount1];
+				indexCount1++;
+				//When 1 list is depleted then the rest of the other list is simply added to the end. 
+				if (merge1.length == indexCount1) {
+					i++;
+					while (i < n) {
+						result[i] = merge2[indexCount2];
+						indexCount2++;
+						i++;
+					}
+				}
+			}
+			else if (merge1[indexCount1] >= merge2[indexCount2]) {
+				result[i] = merge2[indexCount2];
+				indexCount2++;
+				if (merge2.length == indexCount2) {
+					while (i < n) {
+						result[i] = merge1[indexCount1];
+						indexCount1++;
+						i++;
+					}
+				}
 			}
 			
-			
 		}
 		
-		
-		return array;
+		return result;
 	}
 	
 static int[] mergeSort_2(int[] array, int k) {
