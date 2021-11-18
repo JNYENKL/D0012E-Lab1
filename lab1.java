@@ -5,12 +5,14 @@ import java.util.*;
 public class lab1 {
 
 	public static void main(String[] args) {
+		/*
 		Random rand = new Random();
-		int[] datSet = new int[1000];
-		for (int i = 0; i < 1000; i++) {
+		int[] datSet = new int[12000];
+		for (int i = 0; i < datSet.length; i++) {
 			datSet[i] = rand.nextInt(100);
 			//System.out.print(" " + datSet[i]);
 		}
+		
 		
 		//========PRINTING===========
 		//Print out the unsorted data set:
@@ -35,6 +37,7 @@ public class lab1 {
         }
         System.out.print("] \n\n");
 		
+        System.out.println("Input Length:"+ datSet.length);
         
       //===========MergeSort #1=========================
         long t1 = System.nanoTime();
@@ -49,7 +52,7 @@ public class lab1 {
         	System.out.print(outArray1[i] + ",");
         }
         System.out.print("] \n");
-        
+       
         //==========MergeSort #2========================
         long t3 = System.nanoTime();
         int [] outArray2 = mergeSort_2(datSet, 5);
@@ -63,7 +66,33 @@ public class lab1 {
         	System.out.print(outArray2[i] + ",");
         }
         System.out.print("] \n");
+        */
         
+        //Get averages for each input size
+        int inputSize = 1000; //Define input size here
+        long time_ns = 0;
+        int numberOfMeasurements = 100000;
+        int k = 3;
+        
+        for(int i=0;i<numberOfMeasurements;i++) {
+        	//Generate a random sequence of numbers
+        	Random rand2 = new Random();
+    		int[] dataSet = new int[inputSize];
+    		for (int j = 0; j < dataSet.length; j++) {
+    			dataSet[j] = rand2.nextInt(100);
+    			//System.out.print(" " + datSet[i]);
+    		}
+    		
+    		//Do the measurements and save the time in time_ns
+    		long t1 = System.nanoTime();
+            int [] outArray1 = mergeSort_2(dataSet, k);
+            long t2 = System.nanoTime();
+            time_ns += t2-t1;
+            //System.out.println("Time for mergeSort with insertionSort:" + performance1 + "ns");
+        }
+        
+        //Print out the average time
+        System.out.println("Time for mergeSort:" + time_ns/numberOfMeasurements + "ns");
 	}
 	
 	static int[] insertionSort(int array[], int array_length)
@@ -126,6 +155,7 @@ public class lab1 {
 			    
 				int index = Integer.MAX_VALUE;
 			    
+				//Loop trough part of array to narrow down indexes
 			    while (lo <= hi) {
 			        int mid = lo  + ((hi - lo) / 2);
 			        if (array[mid] < key) {
@@ -140,33 +170,26 @@ public class lab1 {
 			    return index;
 	}
 	
-	
+	//Mergesort using insertionSort
 	static int[] mergeSort_1(int[] array, int k) {
-		
+		//Cannot divide by 0
+		if(k <= 0) {
+			return null; 
+		}
 		
 		int n = array.length;
 		
-		int[] result = new int[n];
+		int rest = n % k;
 		
-		//Size of chunks that will be sorted
-		int chunkSize = Math.floorDiv(n, k);
-		
-		
-		
-		if(chunkSize <= 0) {
-			return null;
-		}
-		
-		int rest = n % chunkSize;
-		
-		int numberOfChunks = n / chunkSize + (rest > 0 ? 1 : 0);
+		//Get number of sub-sets to create and add 1 if there's a rest in n/k
+		int numberOfChunks = n / k + (rest > 0 ? 1 : 0);
 		
 		//Hold chunks in a 2D-array
 		int [][] splittedArrays = new int[numberOfChunks][];
 		
 		//Traverse array chunk by chunk and assign each chunk an index in the splitted array
 		for(int i = 0; i< (rest > 0 ? numberOfChunks -1 : numberOfChunks); i++) {
-			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*chunkSize,(numberOfChunks -1)*chunkSize + rest);
+			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*k,(numberOfChunks -1)*k + rest);
 		}
 		
 		//Time to do the sorting on each block
@@ -183,43 +206,34 @@ public class lab1 {
 			
 			
 		}
-		
-		
 		return array;
 	}
 	
-static int[] mergeSort_2(int[] array, int k) {
-		
+		//mergeSort using bSort
+     static int[] mergeSort_2(int[] array, int k) {
+ 		if(k <= 0) {
+			return null; //null causes error when reading array.length in bSort
+		}
 		
 		int n = array.length;
 		
-		int[] result = new int[n];
-		
-		//Size of chunks that will be sorted
-		int chunkSize = Math.floorDiv(n, k);
+		int rest = n % k;
 		
 		
-		
-		if(chunkSize <= 0) {
-			return null;
-		}
-		
-		int rest = n % chunkSize;
-		
-		int numberOfChunks = n / chunkSize + (rest > 0 ? 1 : 0);
+		//Get number of sub-sets to create and add 1 if there's a rest in n/k
+		int numberOfChunks = (n / k) + (rest > 0 ? 1 : 0);
 		
 		//Hold chunks in a 2D-array
 		int [][] splittedArrays = new int[numberOfChunks][];
 		
 		//Traverse array chunk by chunk and assign each chunk an index in the splitted array
-		for(int i = 0; i< (rest > 0 ? numberOfChunks -1 : numberOfChunks); i++) {
-			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*chunkSize,(numberOfChunks -1)*chunkSize + rest);
+		for(int i = 0; i< (rest > 0 ? numberOfChunks-1 : numberOfChunks); i++) {
+			splittedArrays[i] = Arrays.copyOfRange(array, (numberOfChunks -1)*k,(numberOfChunks -1)*k + rest);
 		}
 		
-		//Time to do the sorting on each block
+		//Do the sorting on each block/sub-array
 		for(int i = 0; i<numberOfChunks; i++) {
 			splittedArrays[i] = bSort(splittedArrays[i]);
-			
 		}
 		
 		//The merging
@@ -230,8 +244,6 @@ static int[] mergeSort_2(int[] array, int k) {
 			
 			
 		}
-		
-		
 		return array;
 	}
 
