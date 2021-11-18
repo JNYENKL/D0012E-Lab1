@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+iimport java.util.Arrays;
 import java.util.Random;
 
 public class Main {
@@ -68,51 +68,53 @@ public class Main {
 	
 	static int[] insertionSort(int array[], int array_length)
     {
+		int[] copyOfArray = array;
         // The base case
         if (array_length <= 1)
-            return array;
+            return copyOfArray;
     
         // Sort first n-1 elements
-        insertionSort( array, array_length-1 );
+        insertionSort( copyOfArray, array_length-1 );
     
         //Put last element at correct location
-        int last = array[array_length-1];
+        int last = copyOfArray[array_length-1];
         int j = array_length-2;
     
         //Move elements of array > key
-        while (j >= 0 && array[j] > last)
+        while (j >= 0 && copyOfArray[j] > last)
         {
-            array[j+1] = array[j];
+        	copyOfArray[j+1] = copyOfArray[j];
             j--;
         }
         
         //Put the last one where it should be in array
-        array[j+1] = last;
+        copyOfArray[j+1] = last;
         
-        return array;
+        return copyOfArray;
     }
 	
 	
 	static int[] bSort(int array[])
     {
-        for (int i = 1; i < array.length; i++)
+		int[] copyOfArray = array;
+        for (int i = 1; i < copyOfArray.length; i++)
         {
-            int key = array[i];
+            int key = copyOfArray[i];
  
             int hi = i;
             int lo = 0;
             
             //Find where to put the current key by binary search
-            int j = Math.abs(BinarySearch(array, key, lo, hi));
+            int j = Math.abs(BinarySearch(copyOfArray, key, lo, hi));
             
             //Shift array right
-            System.arraycopy(array, j, array, j + 1, i - j);
+            System.arraycopy(copyOfArray, j, copyOfArray, j + 1, i - j);
  
             //Assign key to the found index of array 
-            array[j] = key;
+            copyOfArray[j] = key;
         }
         
-        return array;
+        return copyOfArray;
     }
 	
 	
